@@ -1,0 +1,37 @@
+version: '3'
+services:
+
+  #PHP Service
+  app:
+    image: devilbox/php-fpm-7.4:latest
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./app:/var/www/app
+      - ./files:/var/www/files:z
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ${DOWNLOAD_LINK}:/var/www/downloads/:z
+    networks:
+      - app-network
+
+  #Nginx Service
+  webserver:
+    build: nginx
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/log/error.log:/var/log/nginx/error.log
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge

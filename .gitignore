@@ -1,0 +1,5 @@
+.idea/*
+app/upload/tmp/
+files/
+nginx/log/
+tmp/
